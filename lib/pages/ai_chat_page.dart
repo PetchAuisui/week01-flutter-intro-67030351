@@ -81,7 +81,7 @@ class _AiChatPageState extends State<AiChatPage> {
 
       final response = await http.post(
         Uri.parse(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${ApiConfig.geminiApiKey}',
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${ApiConfig.geminiApiKey}',
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
