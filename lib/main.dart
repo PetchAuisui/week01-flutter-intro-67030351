@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'config/api_config.dart';
 import 'pages/ai_chat_page.dart';
 
@@ -308,13 +309,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             )
                           else if (_aiIntroduction != null)
-                            Text(
-                              _aiIntroduction!,
-                              style: TextStyle(
-                                fontSize: 14.5,
-                                height: 1.5,
-                                color: isDark ? Colors.white : Colors.black87,
-                                fontStyle: FontStyle.italic,
+                            MarkdownBody(
+                              data: _aiIntroduction!,
+                              styleSheet: MarkdownStyleSheet(
+                                p: TextStyle(
+                                  fontSize: 14.5,
+                                  height: 1.5,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                                blockquote: TextStyle(
+                                  fontSize: 14.0,
+                                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                blockquoteDecoration: BoxDecoration(
+                                  color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: isDark ? Colors.orange.shade300 : Colors.orange,
+                                      width: 4,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                         ],
