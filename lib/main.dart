@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'config/api_config.dart';
 import 'pages/ai_chat_page.dart';
 
 // Global Theme Notifier for Dark Mode Support
@@ -44,8 +47,70 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String? _aiIntroduction;
+  bool _isGeneratingIntro = false;
+
+  Future<void> _generateAiIntroduction() async {
+    setState(() {
+      _isGeneratingIntro = true;
+      _aiIntroduction = null;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${ApiConfig.geminiApiKey}',
+        ),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "เขียนบทแนะนำตัวสั้นๆ (ประมาณ 3-4 ประโยค) สำหรับประวัติของฉันต่อไปนี้ให้น่าประทับใจ น่าสนใจ และมีความเป็นมืออาชีพในภาษาไทย:\n"
+                          "ชื่อ: Siwapat Auisui\n"
+                          "รหัสนักศึกษา: 67030351\n"
+                          "คณะ: ครุศาสตร์อุตสาหกรรมและเทคโนโลยี\n"
+                          "สถาบัน: สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง\n"
+                          "อีเมล: 67030351@kmitl.ac.th\n"
+                          "วิชาที่ชอบ: Mobile Development\n"
+                          "เป้าหมาย: พัฒนาแอปให้ได้ 1 ตัว"
+                }
+              ]
+            }
+          ]
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final aiText = data["candidates"][0]["content"]["parts"][0]["text"] ?? "ไม่สามารถสร้างข้อมูลแนะนำตัวได้";
+        setState(() {
+          _aiIntroduction = aiText.trim();
+        });
+      } else {
+        setState(() {
+          _aiIntroduction = "เกิดข้อผิดพลาดในการดึงข้อมูลจาก AI (รหัส: ${response.statusCode})";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _aiIntroduction = "เกิดข้อผิดพลาดในการเชื่อมต่อ: $e";
+      });
+    } finally {
+      setState(() {
+        _isGeneratingIntro = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,35 +222,30 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildInfoRow(
-                      context,
                       Icons.school,
                       'คณะ',
                       'ครุศาสตร์อุตสาหกรรมและเทคโนโลยี',
                     ),
                     const Divider(height: 20),
                     _buildInfoRow(
-                      context,
                       Icons.account_balance,
                       'มหาวิทยาลัย',
                       'สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง',
                     ),
                     const Divider(height: 20),
                     _buildInfoRow(
-                      context,
                       Icons.email,
                       'อีเมล',
                       '67030351@kmitl.ac.th',
                     ),
                     const Divider(height: 20),
                     _buildInfoRow(
-                      context,
                       Icons.code,
                       'วิชาที่ชอบ',
                       'Mobile Development',
                     ),
                     const Divider(height: 20),
                     _buildInfoRow(
-                      context,
                       Icons.star,
                       'เป้าหมาย',
                       'พัฒนาแอปให้ได้ 1 ตัว',
@@ -195,9 +255,88 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
 
-            // Challenge 1: Animated Action Button
+            // Challenge 3: AI Generated Introduction Card (with animated height transitions)
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: _isGeneratingIntro || _aiIntroduction != null
+                  ? Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark
+                              ? [Colors.deepPurple.shade900.withOpacity(0.4), Colors.orange.shade900.withOpacity(0.2)]
+                              : [Colors.deepPurple.shade50, Colors.orange.shade50],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.deepPurple.withOpacity(0.2),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.auto_awesome, color: Colors.deepPurple, size: 22),
+                              const SizedBox(width: 8),
+                              Text(
+                                "แนะนำตัวสร้างโดย Gemini AI",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: isDark ? Colors.deepPurple.shade200 : Colors.deepPurple.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          if (_isGeneratingIntro)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                                ),
+                              ),
+                            )
+                          else if (_aiIntroduction != null)
+                            Text(
+                              _aiIntroduction!,
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                height: 1.5,
+                                color: isDark ? Colors.white : Colors.black87,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+
+            // Challenge 3: Write Profile Intro with Gemini Button
+            AnimatedActionButton(
+              onPressed: _isGeneratingIntro ? () {} : _generateAiIntroduction,
+              icon: Icon(
+                _isGeneratingIntro ? Icons.hourglass_empty : Icons.auto_awesome,
+                color: Colors.white,
+              ),
+              label: Text(_isGeneratingIntro ? 'กำลังสร้างบทแนะนำ...' : 'ให้ AI เขียนแนะนำตัว'),
+              backgroundColor: Colors.deepPurple,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Challenge 1: Animated Action Button for Chat
             AnimatedActionButton(
               onPressed: () {
                 Navigator.push(
@@ -216,7 +355,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
