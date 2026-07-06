@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final response = await http.post(
         Uri.parse(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${ApiConfig.geminiApiKey}',
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ApiConfig.geminiApiKey}',
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -76,30 +76,34 @@ class _ProfilePageState extends State<ProfilePage> {
             {
               "parts": [
                 {
-                  "text": "เขียนบทแนะนำตัวสั้นๆ (ประมาณ 3-4 ประโยค) สำหรับประวัติของฉันต่อไปนี้ให้น่าประทับใจ น่าสนใจ และมีความเป็นมืออาชีพในภาษาไทย:\n"
-                          "ชื่อ: Siwapat Auisui\n"
-                          "รหัสนักศึกษา: 67030351\n"
-                          "คณะ: ครุศาสตร์อุตสาหกรรมและเทคโนโลยี\n"
-                          "สถาบัน: สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง\n"
-                          "อีเมล: 67030351@kmitl.ac.th\n"
-                          "วิชาที่ชอบ: Mobile Development\n"
-                          "เป้าหมาย: พัฒนาแอปให้ได้ 1 ตัว"
-                }
-              ]
-            }
-          ]
+                  "text":
+                      "เขียนบทแนะนำตัวสั้นๆ (ประมาณ 3-4 ประโยค) สำหรับประวัติของฉันต่อไปนี้ให้น่าประทับใจ น่าสนใจ และมีความเป็นมืออาชีพในภาษาไทย:\n"
+                      "ชื่อ: Siwapat Auisui\n"
+                      "รหัสนักศึกษา: 67030351\n"
+                      "คณะ: ครุศาสตร์อุตสาหกรรมและเทคโนโลยี\n"
+                      "สถาบัน: สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง\n"
+                      "อีเมล: 67030351@kmitl.ac.th\n"
+                      "วิชาที่ชอบ: Mobile Development\n"
+                      "เป้าหมาย: พัฒนาแอปให้ได้ 1 ตัว",
+                },
+              ],
+            },
+          ],
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final aiText = data["candidates"][0]["content"]["parts"][0]["text"] ?? "ไม่สามารถสร้างข้อมูลแนะนำตัวได้";
+        final aiText =
+            data["candidates"][0]["content"]["parts"][0]["text"] ??
+            "ไม่สามารถสร้างข้อมูลแนะนำตัวได้";
         setState(() {
           _aiIntroduction = aiText.trim();
         });
       } else {
         setState(() {
-          _aiIntroduction = "เกิดข้อผิดพลาดในการดึงข้อมูลจาก AI (รหัส: ${response.statusCode})";
+          _aiIntroduction =
+              "เกิดข้อผิดพลาดในการดึงข้อมูลจาก AI (รหัส: ${response.statusCode})";
         });
       }
     } catch (e) {
@@ -128,13 +132,10 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(
-              isDark ? Icons.light_mode : Icons.dark_mode,
-            ),
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
             tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
             onPressed: () {
-              themeNotifier.value =
-                  isDark ? ThemeMode.light : ThemeMode.dark;
+              themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
             },
           ),
         ],
@@ -152,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.3),
+                    color: Colors.orange.withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -181,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            
+
             const SizedBox(height: 16),
 
             // Challenge 1: Social Media Links Row
@@ -217,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              shadowColor: Colors.orange.withOpacity(0.2),
+              shadowColor: Colors.orange.withValues(alpha: 0.2),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -234,11 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง',
                     ),
                     const Divider(height: 20),
-                    _buildInfoRow(
-                      Icons.email,
-                      'อีเมล',
-                      '67030351@kmitl.ac.th',
-                    ),
+                    _buildInfoRow(Icons.email, 'อีเมล', '67030351@kmitl.ac.th'),
                     const Divider(height: 20),
                     _buildInfoRow(
                       Icons.code,
@@ -270,14 +267,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isDark
-                              ? [Colors.deepPurple.shade900.withOpacity(0.4), Colors.orange.shade900.withOpacity(0.2)]
-                              : [Colors.deepPurple.shade50, Colors.orange.shade50],
+                              ? [
+                                  Colors.deepPurple.shade900.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                  Colors.orange.shade900.withValues(alpha: 0.2),
+                                ]
+                              : [
+                                  Colors.deepPurple.shade50,
+                                  Colors.orange.shade50,
+                                ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: Colors.deepPurple.withOpacity(0.2),
+                          color: Colors.deepPurple.withValues(alpha: 0.2),
                           width: 1.5,
                         ),
                       ),
@@ -286,14 +291,20 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.auto_awesome, color: Colors.deepPurple, size: 22),
+                              const Icon(
+                                Icons.auto_awesome,
+                                color: Colors.deepPurple,
+                                size: 22,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 "แนะนำตัวสร้างโดย Gemini AI",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: isDark ? Colors.deepPurple.shade200 : Colors.deepPurple.shade800,
+                                  color: isDark
+                                      ? Colors.deepPurple.shade200
+                                      : Colors.deepPurple.shade800,
                                 ),
                               ),
                             ],
@@ -304,7 +315,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16.0),
                                 child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.deepPurple,
+                                  ),
                                 ),
                               ),
                             )
@@ -319,15 +332,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 blockquote: TextStyle(
                                   fontSize: 14.0,
-                                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade700,
                                   fontStyle: FontStyle.italic,
                                 ),
                                 blockquoteDecoration: BoxDecoration(
-                                  color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
+                                  color: isDark
+                                      ? Colors.white10
+                                      : Colors.black.withValues(alpha: 0.03),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border(
                                     left: BorderSide(
-                                      color: isDark ? Colors.orange.shade300 : Colors.orange,
+                                      color: isDark
+                                          ? Colors.orange.shade300
+                                          : Colors.orange,
                                       width: 4,
                                     ),
                                   ),
@@ -347,7 +366,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 _isGeneratingIntro ? Icons.hourglass_empty : Icons.auto_awesome,
                 color: Colors.white,
               ),
-              label: Text(_isGeneratingIntro ? 'กำลังสร้างบทแนะนำ...' : 'ให้ AI เขียนแนะนำตัว'),
+              label: Text(
+                _isGeneratingIntro
+                    ? 'กำลังสร้างบทแนะนำ...'
+                    : 'ให้ AI เขียนแนะนำตัว',
+              ),
               backgroundColor: Colors.deepPurple,
             ),
 
@@ -451,12 +474,16 @@ class _AnimatedActionButtonState extends State<AnimatedActionButton> {
             ..scale(_isPressed ? 0.96 : (_isHovered ? 1.04 : 1.0)),
           decoration: BoxDecoration(
             color: _isPressed
-                ? widget.backgroundColor.withOpacity(0.85)
-                : (_isHovered ? widget.backgroundColor.withOpacity(0.95) : widget.backgroundColor),
+                ? widget.backgroundColor.withValues(alpha: 0.85)
+                : (_isHovered
+                      ? widget.backgroundColor.withValues(alpha: 0.95)
+                      : widget.backgroundColor),
             borderRadius: BorderRadius.circular(26),
             boxShadow: [
               BoxShadow(
-                color: widget.backgroundColor.withOpacity(_isPressed ? 0.2 : 0.4),
+                color: widget.backgroundColor.withValues(
+                  alpha: _isPressed ? 0.2 : 0.4,
+                ),
                 blurRadius: _isPressed ? 4 : (_isHovered ? 12 : 8),
                 offset: Offset(0, _isPressed ? 2 : (_isHovered ? 6 : 4)),
               ),
@@ -536,28 +563,26 @@ class _SocialMediaButtonState extends State<SocialMediaButton> {
               ..scale(_isPressed ? 0.9 : (_isHovered ? 1.15 : 1.0)),
             decoration: BoxDecoration(
               color: _isPressed
-                  ? widget.color.withOpacity(0.2)
-                  : (_isHovered ? widget.color.withOpacity(0.15) : (isDark ? Colors.white10 : Colors.grey.shade100)),
+                  ? widget.color.withValues(alpha: 0.2)
+                  : (_isHovered
+                        ? widget.color.withValues(alpha: 0.15)
+                        : (isDark ? Colors.white10 : Colors.grey.shade100)),
               shape: BoxShape.circle,
               border: Border.all(
-                color: widget.color.withOpacity(_isHovered ? 0.8 : 0.2),
+                color: widget.color.withValues(alpha: _isHovered ? 0.8 : 0.2),
                 width: 2,
               ),
               boxShadow: _isHovered
                   ? [
                       BoxShadow(
-                        color: widget.color.withOpacity(0.25),
+                        color: widget.color.withValues(alpha: 0.25),
                         blurRadius: 10,
                         spreadRadius: 1,
-                      )
+                      ),
                     ]
                   : [],
             ),
-            child: Icon(
-              widget.icon,
-              color: widget.color,
-              size: 26,
-            ),
+            child: Icon(widget.icon, color: widget.color, size: 26),
           ),
         ),
       ),

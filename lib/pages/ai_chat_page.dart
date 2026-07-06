@@ -21,15 +21,18 @@ class _AiChatPageState extends State<AiChatPage> {
   final Map<String, Map<String, String>> _personalities = {
     'friendly': {
       'name': '😊 เป็นกันเอง',
-      'prompt': 'คุณคือผู้ช่วย AI แสนดี ตอบคำถามอย่างน่ารัก สุภาพ เป็นกันเอง และพูดคุยภาษาไทยอย่างเป็นธรรมชาติ มีความเห็นอกเห็นใจผู้อื่น',
+      'prompt':
+          'คุณคือผู้ช่วย AI แสนดี ตอบคำถามอย่างน่ารัก สุภาพ เป็นกันเอง และพูดคุยภาษาไทยอย่างเป็นธรรมชาติ มีความเห็นอกเห็นใจผู้อื่น',
     },
     'advisor': {
       'name': '🎓 อาจารย์ที่ปรึกษา',
-      'prompt': 'คุณคืออาจารย์ที่ปรึกษาจากสถาบัน KMITL ที่มีความรอบรู้ ให้คำปรึกษาแก่นักศึกษาอย่างใจดี อบอุ่น และเต็มไปด้วยความรู้ทางวิชาการและแนวคิดที่เป็นประโยชน์',
+      'prompt':
+          'คุณคืออาจารย์ที่ปรึกษาจากสถาบัน KMITL ที่มีความรอบรู้ ให้คำปรึกษาแก่นักศึกษาอย่างใจดี อบอุ่น และเต็มไปด้วยความรู้ทางวิชาการและแนวคิดที่เป็นประโยชน์',
     },
     'tech': {
       'name': '💻 โปรแกรมเมอร์รุ่นพี่',
-      'prompt': 'คุณคือรุ่นพี่นักพัฒนาซอฟต์แวร์ผู้เชี่ยวชาญ ตอบคำถามเชิงเทคนิคและการเขียนโค้ดด้วยภาษาที่เข้าใจง่าย เป็นกันเอง และใช้ศัพท์โปรแกรมเมอร์บ้างเล็กน้อยอย่างเหมาะสม',
+      'prompt':
+          'คุณคือรุ่นพี่นักพัฒนาซอฟต์แวร์ผู้เชี่ยวชาญ ตอบคำถามเชิงเทคนิคและการเขียนโค้ดด้วยภาษาที่เข้าใจง่าย เป็นกันเอง และใช้ศัพท์โปรแกรมเมอร์บ้างเล็กน้อยอย่างเหมาะสม',
     },
   };
 
@@ -72,24 +75,26 @@ class _AiChatPageState extends State<AiChatPage> {
             return {
               "role": msg['role'] == 'user' ? 'user' : 'model',
               "parts": [
-                {"text": msg['text']!}
-              ]
+                {"text": msg['text']!},
+              ],
             };
-          }).toList();
+          })
+          .toList();
 
-      final systemPrompt = _personalities[_selectedPersonalityKey]?['prompt'] ?? '';
+      final systemPrompt =
+          _personalities[_selectedPersonalityKey]?['prompt'] ?? '';
 
       final response = await http.post(
         Uri.parse(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${ApiConfig.geminiApiKey}',
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ApiConfig.geminiApiKey}',
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           // Challenge 2: Include System Prompt
           "systemInstruction": {
             "parts": [
-              {"text": systemPrompt}
-            ]
+              {"text": systemPrompt},
+            ],
           },
           "contents": contents,
         }),
@@ -136,7 +141,9 @@ class _AiChatPageState extends State<AiChatPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('ล้างประวัติการสนทนา?'),
-        content: const Text('คุณแน่ใจหรือไม่ว่าต้องการลบข้อความทั้งหมดในห้องแชทนี้?'),
+        content: const Text(
+          'คุณแน่ใจหรือไม่ว่าต้องการลบข้อความทั้งหมดในห้องแชทนี้?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -175,15 +182,19 @@ class _AiChatPageState extends State<AiChatPage> {
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
-            bottomLeft: isUser ? const Radius.circular(16) : const Radius.circular(4),
-            bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(16),
+            bottomLeft: isUser
+                ? const Radius.circular(16)
+                : const Radius.circular(4),
+            bottomRight: isUser
+                ? const Radius.circular(4)
+                : const Radius.circular(16),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: isUser
@@ -194,10 +205,18 @@ class _AiChatPageState extends State<AiChatPage> {
             : MarkdownBody(
                 data: message["text"] ?? "",
                 styleSheet: MarkdownStyleSheet(
-                  p: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 15, height: 1.4),
-                  listBullet: TextStyle(color: isDark ? Colors.white : Colors.black),
+                  p: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 15,
+                    height: 1.4,
+                  ),
+                  listBullet: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
                   h3: TextStyle(
-                    color: isDark ? Colors.orange.shade300 : Colors.orange.shade800,
+                    color: isDark
+                        ? Colors.orange.shade300
+                        : Colors.orange.shade800,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                     height: 1.5,
@@ -214,7 +233,10 @@ class _AiChatPageState extends State<AiChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gemini AI Chat", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Gemini AI Chat",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
         centerTitle: true,
@@ -248,13 +270,18 @@ class _AiChatPageState extends State<AiChatPage> {
                     decoration: BoxDecoration(
                       color: isDark ? Colors.grey.shade800 : Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                      border: Border.all(
+                        color: Colors.orange.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _selectedPersonalityKey,
                         isExpanded: true,
-                        icon: const Icon(Icons.arrow_drop_down, color: Colors.orange),
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.orange,
+                        ),
                         style: TextStyle(
                           color: isDark ? Colors.white : Colors.black87,
                           fontSize: 13,
@@ -280,7 +307,7 @@ class _AiChatPageState extends State<AiChatPage> {
               ],
             ),
           ),
-          
+
           Expanded(
             child: _messages.isEmpty
                 ? Center(
@@ -290,14 +317,18 @@ class _AiChatPageState extends State<AiChatPage> {
                         Icon(
                           Icons.chat_bubble_outline,
                           size: 64,
-                          color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                          color: isDark
+                              ? Colors.grey.shade700
+                              : Colors.grey.shade300,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           "👋 เริ่มต้นคุยกับ Gemini กันเลย!",
                           style: TextStyle(
                             fontSize: 16,
-                            color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade600,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -306,7 +337,10 @@ class _AiChatPageState extends State<AiChatPage> {
                   )
                 : ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     itemCount: _messages.length,
                     itemBuilder: (context, index) {
                       return _buildMessage(_messages[index]);
@@ -337,7 +371,10 @@ class _AiChatPageState extends State<AiChatPage> {
                       controller: _controller,
                       decoration: InputDecoration(
                         hintText: "พิมพ์ข้อความที่นี่...",
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: const BorderSide(
@@ -348,7 +385,9 @@ class _AiChatPageState extends State<AiChatPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide(
-                            color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                            color: isDark
+                                ? Colors.grey.shade700
+                                : Colors.grey.shade300,
                           ),
                         ),
                         border: OutlineInputBorder(
