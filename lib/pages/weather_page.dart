@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// WeatherCard - StatelessWidget แสดงข้อมูลสภาพอากาศด้วย Material 3
 class WeatherCard extends StatelessWidget {
-  // ประกาศตัวแปรรับค่าผ่าน Constructor (Read-Only)
-  final String cityName;
+  final String city;
   final double temperature;
-  final String condition; // 'sunny', 'cloudy', หรือ 'rainy'
-  final double humidity;
+  final String condition;
+  final int humidity;
 
   const WeatherCard({
     super.key,
-    required this.cityName,
+    required this.city,
     required this.temperature,
     required this.condition,
     required this.humidity,
@@ -18,105 +16,111 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    // กำหนดรายละเอียดไอคอนตามประเภทสภาพอากาศ
     IconData weatherIcon;
     Color iconColor;
 
     switch (condition.toLowerCase()) {
       case 'sunny':
-        weatherIcon = Icons.wb_sunny_rounded;
+        weatherIcon = Icons.wb_sunny;
         iconColor = Colors.amber.shade700;
         break;
       case 'cloudy':
-        weatherIcon = Icons.wb_cloudy_rounded;
-        iconColor = Colors.blueGrey.shade500;
+        weatherIcon = Icons.cloud;
+        iconColor = Colors.blueGrey.shade400;
         break;
       case 'rainy':
-        weatherIcon = Icons.umbrella_rounded;
+        weatherIcon = Icons.water_drop;
         iconColor = Colors.blue.shade600;
         break;
       default:
-        weatherIcon = Icons.help_outline_rounded;
-        iconColor = colorScheme.onSurfaceVariant;
+        weatherIcon = Icons.help_outline;
+        iconColor = Colors.grey;
     }
 
     return Card(
-      elevation: 0, // สไตล์ Material 3 นิยมลดการใช้เงาหนาและใช้ขอบแทน
+      elevation: 4,
+      shadowColor: Colors.blue.withOpacity(0.15),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.outlineVariant, width: 1.0),
-        borderRadius: BorderRadius.circular(16.0), // ขอบโค้งสไตล์ M3
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: Colors.blue.shade100, width: 1.5),
       ),
-      color: colorScheme.surfaceContainerLow,
+      color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. ชื่อเมือง
             Text(
-              cityName,
-              style: theme.textTheme.titleMedium?.copyWith(
+              city,
+              style: const TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
+                color: Colors.blueAccent,
+                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(height: 16),
-
-            // 2. แถวแสดงอุณหภูมิและไอคอน
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${temperature.toStringAsFixed(1)}°C',
-                  style: theme.textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.blue.shade900,
+                    letterSpacing: -1,
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHigh,
+                    color: Colors.blue.shade50,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(weatherIcon, size: 40, color: iconColor),
+                  child: Icon(weatherIcon, size: 44, color: iconColor),
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            Divider(color: Colors.blue.shade50, thickness: 1.5),
             const SizedBox(height: 16),
-
-            Divider(color: colorScheme.outlineVariant, height: 1),
-            const SizedBox(height: 16),
-
-            // 3. แถวข้อมูลความชื้นและข้อมูลสรุป
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
                     Icon(
-                      Icons.water_drop_outlined,
-                      size: 18,
-                      color: colorScheme.primary,
+                      Icons.water_drop,
+                      size: 20,
+                      color: Colors.blue.shade400,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 8),
                     Text(
-                      'ความชื้น: ${humidity.toStringAsFixed(0)}%',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                      'ความชื้น: $humidity%',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueGrey.shade700,
                       ),
                     ),
                   ],
                 ),
-                Text(
-                  condition.toUpperCase(),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.primary,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    condition.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade700,
+                      letterSpacing: 0.8,
+                    ),
                   ),
                 ),
               ],
@@ -144,10 +148,10 @@ class WeatherPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(24.0),
           child: WeatherCard(
-            cityName: 'Bangkok',
+            city: 'Bangkok',
             temperature: 32.5,
             condition: 'sunny',
-            humidity: 55.0,
+            humidity: 55,
           ),
         ),
       ),
