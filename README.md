@@ -1,17 +1,40 @@
-# week01_hello_flutter
+# 📱 การทดลองที่ 1: Hello Flutter & Gemini AI Integration
+### วิชา: การพัฒนาซอฟต์แวร์สำหรับอุปกรณ์เคลื่อนที่ (Mobile Software Development)
 
-A new Flutter project.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🎯 วัตถุประสงค์ของการทดลอง
+เพื่อเรียนรู้พื้นฐานการพัฒนาแอปพลิเคชันบนอุปกรณ์เคลื่อนที่ด้วย **Flutter SDK** และภาษา **Dart** ตั้งแต่ขั้นตอนการติดตั้งจัดเตรียมระบบด้วย VS Code และ Android Command-line Tools ตลอดจนทำความเข้าใจแนวคิด Widget System และเรียนรู้วิธีการเชื่อมต่อบริการภายนอกผ่าน API อย่าง **Google AI Studio (Gemini API)** 
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 🚀 ผลงานและการส่งมอบการทดลอง (Lab Deliverables)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+การทดลองนี้เสร็จสิ้นอย่างสมบูรณ์ตามข้อกำหนด โดยแบ่งผลสัมฤทธิ์ออกเป็น 3 ส่วนหลัก ดังนี้:
+
+### 1. ระบบข้อมูลโปรไฟล์และการแนะนำตัวอัตโนมัติด้วย AI (Profile & AI Introduction)
+* ออกแบบหน้าโปรไฟล์นักศึกษา แสดงประวัติการศึกษา วิชาที่ชอบ และเป้าหมายตามหลัก **Material 3 Design**
+* เชื่อมต่อปุ่มเปิดลิงก์ภายนอกไปยัง GitHub และอีเมลติดต่อด้วย `url_launcher`
+* **ผลลัพธ์ของ AI**: เมื่อผู้ใช้กดปุ่ม ระบบจะส่งข้อมูลโปรไฟล์ไปประมวลผลผ่าน **Gemini API (gemini-2.5-flash)** เพื่อเรียบเรียงและแสดงผลบทแนะนำตัวสั้นๆ (ประมาณ 3-4 ประโยค) ที่เป็นทางการและน่าสนใจในภาษาไทยโดยอัตโนมัติ
+
+### 2. ห้องแชทสนทนาอัจฉริยะแบบปรับเปลี่ยนบุคลิกได้ (Multi-Personality AI Chatbot)
+* พัฒนาหน้าการสนทนากับ AI โดยใช้ประวัติการพูดคุย (Chat History) เพื่อความต่อเนื่องของการคุย
+* พัฒนาระบบ **AI Personality Selector** ให้ผู้ใช้เลือกบทบาทการตอบสนองของบอทได้ 3 รูปแบบ (ผ่านการกำหนด System Prompt):
+  * 😊 **เป็นกันเอง** (ผู้ช่วยตอบสุภาพ เป็นกันเองตามธรรมชาติ)
+  * 🎓 **อาจารย์ที่ปรึกษา** (สวมบทอาจารย์ KMITL ให้แนวคิดและคำปรึกษาอบอุ่น)
+  * 💻 **โปรแกรมเมอร์รุ่นพี่** (แนะแนวทางเทคนิคเขียนโค้ดด้วยภาษาเข้าใจง่าย)
+* ระบบล้างประวัติการสนทนา (Clear Chat History) พร้อมแสดงกล่องยืนยันก่อนลบข้อมูล
+
+### 3. ส่วนรายงานสภาพอากาศ (Weather Page & WeatherCard)
+* พัฒนาโมดูล **`WeatherCard`** (StatelessWidget) เพื่อแสดงสถานะสภาพอากาศแบบเจาะจง 
+* แสดงข้อมูลเมือง, อุณหภูมิเฉลี่ย, สภาพอากาศทั่วไปพร้อมไอคอนกำกับที่เปลี่ยนแปลงอัตโนมัติตามสภาพอากาศ (Sunny, Cloudy, Rainy) และเปอร์เซ็นต์ความชื้นสัมพัทธ์
+* เชื่อมโยงระบบนำทาง (Navigation) ไปและกลับระหว่างหน้าโปรไฟล์และหน้ารายงานอากาศอย่างสมบูรณ์แบบ
+
+---
+
+## 💡 สิ่งที่ได้เรียนรู้จากการทดลอง (Key Takeaways)
+
+1. **สถาปัตยกรรม Flutter & Widget**: เข้าใจโครงสร้าง Widget Tree และการทำงานร่วมกันระหว่าง **StatelessWidget** (ส่วนแสดงผลคงที่) และ **StatefulWidget** (ส่วนแสดงผลที่เปลี่ยนตามสถานะภายในตัวแปรผ่าน `setState`)
+2. **ภาษา Dart และ Null Safety**: ฝึกฝนการใช้ภาษา Dart เช่น ตัวแปรที่อนุญาตเป็น Null (`String?`), การทำงานแบบอะซิงโครนัส (`async`/`await`), และการเรียกใช้งาน Collection (List/Map) เพื่อจัดการข้อมูลในแอป
+3. **การนำ AI มาใช้ในงาน Mobile App**: การทำ API Request และการจัดโครงสร้าง Prompt ร่วมกับโมเดล Gemini เพื่อส่งเสริมฟีเจอร์อัจฉริยะให้กับผู้ใช้
