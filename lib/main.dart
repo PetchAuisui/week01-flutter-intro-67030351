@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'config/api_config.dart';
 import 'pages/ai_chat_page.dart';
+import 'pages/weather_page.dart';
 
 // Global Theme Notifier for Dark Mode Support
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
@@ -388,6 +389,20 @@ class _ProfilePageState extends State<ProfilePage> {
               label: const Text('ทดลอง AI Chat'),
               backgroundColor: Colors.orange,
             ),
+            const SizedBox(height: 16),
+
+            // Navigation to Weather Page
+            AnimatedActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WeatherPage()),
+                );
+              },
+              icon: const Icon(Icons.wb_sunny_rounded, color: Colors.white),
+              label: const Text('รายงานสภาพอากาศ'),
+              backgroundColor: Colors.blueAccent,
+            ),
             const SizedBox(height: 20),
           ],
         ),
@@ -471,7 +486,12 @@ class _AnimatedActionButtonState extends State<AnimatedActionButton> {
           curve: Curves.easeInOut,
           height: 52,
           transform: Matrix4.identity()
-            ..scale(_isPressed ? 0.96 : (_isHovered ? 1.04 : 1.0)),
+            ..scaleByDouble(
+              _isPressed ? 0.96 : (_isHovered ? 1.04 : 1.0),
+              _isPressed ? 0.96 : (_isHovered ? 1.04 : 1.0),
+              1.0,
+              1.0,
+            ),
           decoration: BoxDecoration(
             color: _isPressed
                 ? widget.backgroundColor.withValues(alpha: 0.85)
@@ -560,7 +580,12 @@ class _SocialMediaButtonState extends State<SocialMediaButton> {
             margin: const EdgeInsets.symmetric(horizontal: 10),
             padding: const EdgeInsets.all(12),
             transform: Matrix4.identity()
-              ..scale(_isPressed ? 0.9 : (_isHovered ? 1.15 : 1.0)),
+              ..scaleByDouble(
+                _isPressed ? 0.9 : (_isHovered ? 1.15 : 1.0),
+                _isPressed ? 0.9 : (_isHovered ? 1.15 : 1.0),
+                1.0,
+                1.0,
+              ),
             decoration: BoxDecoration(
               color: _isPressed
                   ? widget.color.withValues(alpha: 0.2)
